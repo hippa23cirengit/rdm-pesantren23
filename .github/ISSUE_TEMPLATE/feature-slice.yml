@@ -1,0 +1,58 @@
+name: Irisan Fitur (Feature Slice)
+description: Usulkan fitur baru atau irisan pekerjaan sesuai alur 1 Issue = 1 Branch
+title: "feat: "
+labels: ["fitur"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Jelaskan irisan fitur dengan kriteria penerimaan yang jelas dalam Bahasa Indonesia.
+  - type: input
+    id: summary
+    attributes:
+      label: Ringkasan Fitur
+      description: Penjelasan singkat satu baris tentang irisan fitur yang dikerjakan.
+    validations:
+      required: true
+  - type: input
+    id: module
+    attributes:
+      label: Modul Domain
+      description: "Contoh: Academic, Students, Grading, Homeroom, ReportCards, AccessControl"
+    validations:
+      required: true
+  - type: dropdown
+    id: schema_pr
+    attributes:
+      label: Apakah Mengubah Skema Database?
+      description: Perubahan migration PostgreSQL wajib diselesaikan di PR tersendiri lebih dulu.
+      options:
+        - "Tidak"
+        - "Ya (Wajib isolasi PR skema)"
+    validations:
+      required: true
+  - type: textarea
+    id: owned_paths
+    attributes:
+      label: Owned Paths (Batas File yang Boleh Diubah)
+      description: Cantumkan daftar path file atau folder yang menjadi cakupan issue ini.
+      placeholder: |
+        - app/Modules/Grading/Actions/SaveStudentScoresAction.php
+        - app/Modules/Grading/Http/Requests/SaveStudentScoresRequest.php
+        - tests/Feature/Grading/SaveStudentScoresTest.php
+    validations:
+      required: true
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Kriteria Penerimaan (TDD)
+      description: Daftar perilaku yang diharapkan, validasi, dan kasus tepi yang harus diuji.
+    validations:
+      required: true
+  - type: textarea
+    id: permissions
+    attributes:
+      label: Permission & Ketergantungan
+      description: Sebutkan granular permission yang dibutuhkan (misal grading.scores.input) dan paket tambahan jika ada.
+    validations:
+      required: false

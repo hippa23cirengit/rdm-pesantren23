@@ -1,0 +1,70 @@
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: rdm_pesantren_test
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U postgres"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
+    steps:
+      - name: Checkout repositori
+        uses: actions/checkout@v4
+
+      - name: Setup PHP 8.4
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          extensions: pdo_pgsql, pgsql, mbstring, xml, ctype, json
+          coverage: none
+
+      - name: Setup Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Siapkan environment
+        run: |
+          cp .env.example .env
+          php -r "file_put_contents('.env', str_replace('DB_CONNECTION=sqlite', 'DB_CONNECTION=pgsql', file_get_contents('.env')));"
+
+      - name: Install dependensi Composer & NPM
+        run: |
+          composer install --no-interaction --prefer-dist --no-progress
+          npm ci
+
+      - name: Generate App Key & Jalankan Migrasi
+        env:
+          DB_HOST: 127.0.0.1
+          DB_PORT: 5432
+          DB_DATABASE: rdm_pesantren_test
+          DB_USERNAME: postgres
+          DB_PASSWORD: password
+        run: |
+          php artisan key:generate
+          php artisan migrate --force
+
+      - name: Build aset frontend
+        run: npm run build
+
+      - name: Jalankan composer check (Pint + Guardrails + Pest)
+        run: composer check
