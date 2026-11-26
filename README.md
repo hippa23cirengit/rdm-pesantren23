@@ -1,58 +1,54 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# RDM Internal — MTs Persis 23
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+Aplikasi **Raport Digital Madrasah (RDM)** internal untuk **MTs Persis 23**, dirancang untuk menyederhanakan alur pengelolaan nilai guru mata pelajaran, rekap wali kelas, leger nilai, hingga cetak PDF rapor dengan alur kerja yang selaras dengan standar RDM Kemenag.
 
-## About Laravel
+## Teknologi Utama
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+- **Backend:** Laravel 13 & PHP 8.4
+- **Database:** PostgreSQL 17
+- **Frontend & UI:** Livewire 4, Alpine.js, Tailwind CSS v4, daisyUI 5 (tema kustom `rdm`)
+- **Kualitas & Pengujian:** Pest 4 (termasuk Architecture Tests), Laravel Pint, dan skrip guardrails (`composer check`)
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+## Arsitektur & Tata Kelola
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Modular Monolith** berbasis fitur dan *use-case* di `app/Modules/<Modul>/`
+- Prinsip **1 File = 1 Responsibility** dengan alur ketergantungan searah (`Route / Livewire -> FormRequest -> Action -> Model / Query -> PostgreSQL`)
+- **Kontrol Akses Berbasis Permission Granular** melalui Laravel Policy/Gate
+- **Tata Kelola UI Terpusat** lewat komponen `resources/views/components/ui/` dalam Bahasa Indonesia
+- **Alur Git:** 1 Issue = 1 Branch (`feat/issue-<N>-<slug>`) dengan isolasi migrasi database dan *Squash and Merge* via Pull Request
 
-## Learning Laravel
+## Menjalankan Proyek Secara Lokal
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
-
-In addition, [Laracasts](https://laracasts.com) contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
-
-You can also watch bite-sized lessons with real-world projects on [Laravel Learn](https://laravel.com/learn), where you will be guided through building a Laravel application from scratch while learning PHP fundamentals.
-
-## Agentic Development
-
-Laravel's predictable structure and conventions make it ideal for AI coding agents like Claude Code, Cursor, and GitHub Copilot. Install [Laravel Boost](https://laravel.com/docs/ai) to supercharge your AI workflow:
+Prasyarat dan langkah lengkap tersedia di [Panduan Pengembangan Lokal](docs/how-to/local-development.md).
 
 ```bash
-composer require laravel/boost --dev
+# 1. Salin konfigurasi environment lalu sesuaikan koneksi PostgreSQL
+cp .env.example .env
 
-php artisan boost:install
+# 2. Pasang dependensi PHP dan frontend
+composer install
+npm install
+
+# 3. Generate key & jalankan migrasi database
+php artisan key:generate
+php artisan migrate
+
+# 4. Build aset Tailwind CSS v4 + daisyUI 5
+npm run build
+
+# 5. Jalankan seluruh verifikasi (Pint + Guardrails + Pest)
+composer check
 ```
 
-Boost provides your agent 15+ tools and skills that help agents build Laravel applications while following best practices.
+## Dokumentasi Proyek
 
-## Contributing
+- [Aturan Arsitektur & Agent](AGENTS.md)
+- [Peta Dokumentasi (Diataxis)](docs/README.md)
+- [Konvensi Arsitektur](docs/reference/architecture-conventions.md)
+- [Glosarium Domain Madrasah](docs/reference/domain-glossary.md)
+- [Alur Kerja 1 Issue = 1 Branch & PR](docs/how-to/workflow-issue-dan-pr.md)
+- [Peta Jalan Proyek (Roadmap)](docs/ROADMAP.md)
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+## Privasi Data
 
-## Code of Conduct
-
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
-
-## Security Vulnerabilities
-
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
-
-## License
-
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+Repositori ini dilarang memuat data asli siswa, guru, orang tua, NIK/NISN, nilai nyata sekolah, maupun file `.env`. Seluruh seeder dan fixture pengujian wajib menggunakan data fiktif/Faker.
