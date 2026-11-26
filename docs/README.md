@@ -4,6 +4,7 @@ Dokumentasi ini disusun mengikuti kerangka **Diataxis** agar seluruh keputusan a
 
 ## Daftar Dokumen
 
+- **[Spesifikasi Produk (PRD)](PRD.md)**: Ruang lingkup, peran pengguna, alur kerja end-to-end, aturan bisnis `.xlsb`, dan checklist verifikasi RDM.
 - **[Standar Dokumentasi](standards/documentation.md)**: Aturan format ADR, keutuhan tautan, dan standar bahasa.
 - **[Catatan Keputusan Arsitektur (ADR)](adr/)**:
   - [ADR 001: Arsitektur Modular Monolith Laravel 13](adr/001-laravel-modular-monolith.md)
